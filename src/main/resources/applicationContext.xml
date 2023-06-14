@@ -7,6 +7,7 @@
     <!-- 一个 bean 标签, 就是 spring 管理的一个类 -->
     <!-- id: bean 的唯一标识符, 不能重复 -->
     <!-- class: bean 对应的类的全限定名 -->
+    <!-- id 和 class 必须是一一对应的关系 -->
 
     <!-- 如果一对标签中间没有内容, 则可以使用自闭合标签 -->
     <bean id="goods" class="com.feng.model.Goods"/>
