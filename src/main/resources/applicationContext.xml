@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 一个 bean 标签, 就是 spring 管理的一个类 -->
+    <!-- id: bean 的唯一标识符, 不能重复 -->
+    <!-- class: bean 对应的类的全限定名 -->
+
+    <!-- 如果一对标签中间没有内容, 则可以使用自闭合标签 -->
+    <bean id="goods" class="com.feng.model.Goods"/>
+    <bean id="user" class="com.feng.model.User"/>
+
+
+</beans>
+
+
+        <!-- 根据配置文件路径, 创建流, 流在创建工厂, 然后工厂才能干活 -->

@@ -102,4 +102,8 @@ public class Goods {
         return result;
 
     }
+
+    public void test() {
+        System.out.println("test");
+    }
 }

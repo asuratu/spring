@@ -15,6 +15,14 @@
     </properties>
 
     <dependencies>
+        <!-- 只需要导入 spring-context, aop、beans, core, expression 会包含在内 -->
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.2.24.RELEASE</version>
+        </dependency>
+
         <!-- 引入servlet依赖 -->
         <dependency>
             <groupId>javax.servlet</groupId>
