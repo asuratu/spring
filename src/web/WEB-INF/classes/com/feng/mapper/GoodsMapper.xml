@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 通过 namespace 指定映射文件对应的接口 -->
+
+<mapper namespace="com.feng.mapper.GoodsMapper">
+    <select id="findGoodsById" resultType="Goods">
+        SELECT
+        <!-- 引入 sql 片段 -->
+        <include refid="goodsColumns"/>
+        WHERE
+        g.id = #{id}
+    </select>
+
+    <!-- 将 sql 中重复的部分抽取出来, 作为一个 sql 片段 -->
+    <sql id="goodsColumns">
+        g.id,
+        g.user_id,
+        g.name,
+        g.description,
+        g.create_at,
+        g.update_at
+        FROM goods g
+    </sql>
+
+    <!-- findGoodsWithUserById -->
+    <select id="findGoodsWithUserById" resultMap="goodsWithUserResultMap">
+        SELECT
+        u.id uid,
+        u.nickname,
+        u.balance,
+        <include refid="goodsColumns"/>
+        JOIN user u ON g.user_id = u.id
+        WHERE
+        g.id = #{id}
+    </select>
+
+    <resultMap id="goodsWithUserResultMap" type="GoodsVO">
+        <!-- 封装查询主体 Goods: -->
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="create_at" property="createAt"/>
+        <result column="update_at" property="updateAt"/>
+        <!-- 一对一映射,需要特殊标签 association-->
+        <association property="user" javaType="com.feng.model.User">
+            <!-- 下面正常的列和属性一一映射 -->
+            <id column="id" property="id"/>
+            <!--            <result column="nickname" property="nickname"/>-->
+            <result column="balance" property="balance"/>
+        </association>
+    </resultMap>
+
+
+    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        <!-- 1. #{} 内写 User 对象的属性名 -->
+        <!-- 2. 如果是自增主键, 需要在 insert 标签中添加 useGeneratedKeys="true" keyProperty="id" -->
+        insert into user (passport, password, nickname, balance, create_at, update_at) values (#{passport}, #{password},
+        #{nickname}, #{balance}, now(), now())
+    </insert>
+
+    <!-- updateUser -->
+    <update id="updateUser" parameterType="User">
+        update user set passport = #{passport}, password = #{password}, nickname = #{nickname}, balance = #{balance},
+        update_at = now() where id = #{id}
+    </update>
+</mapper>

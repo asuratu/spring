@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 通过 namespace 指定映射文件对应的接口 -->
+
+<mapper namespace="com.feng.mapper.UserMapper">
+    <!-- 开启二级缓存 -->
+    <!-- 其实底层在这里设置了一个类, PerpetualCache -->
+    <cache/>
+
+    <!-- select 用于查询单条数据 -->
+    <!-- id: 是接口中的方法名 -->
+    <!-- resultType: 是返回值类型 -->
+
+    <!-- 这里的 resultType="User" 是用于自动封装的 -->
+    <!--    <select id="findUserById" resultType="User"> -->
+    <!-- 使用手动映射时, resultType 就不需要了, 换成 resultMap -->
+    <select id="findUserById" resultMap="userResultMap">
+        <!-- #{id} 相当于预处理的占位符 ? -->
+        <!-- 参数的类型可以是: 基本类型, 包装类型, String, Date, 枚举, 数组, 集合 -->
+        <!-- 其实就是接口的参数列表的值  -->
+        <!-- 查询返回的结果集, 会自动封装到 User 对象中 -->
+
+        <!-- 但是 ORM 自动封装的前提的是: 返回的列名和 User 类的属性名一致 -->
+        <!-- 如果不一致, 需要使用别名 -->
+        <!--        select * from user where id = #{id}-->
+        SELECT
+        id uid,
+        passport pst,
+        password pwd,
+        nickname name,
+        balance blc,
+        create_at,
+        update_at
+        FROM
+        user
+        WHERE
+        id = #{id}
+    </select>
+
+    <!-- 当自动封装失败, 就是用 resultMap -->
+    <!-- resultMap 的 id 是唯一标识, 不能重复 -->
+    <!-- type 是要封装的类型 -->
+    <resultMap id="userResultMap" type="User">
+        <!-- id 是唯一标识, 不能重复 -->
+        <!-- column 是数据库中的列名 -->
+        <!-- property 是 User 类中的属性名 -->
+        <id column="uid" property="id"/>
+        <result column="pst" property="passport"/>
+        <result column="pwd" property="password"/>
+        <result column="name" property="nickname"/>
+        <result column="blc" property="balance"/>
+    </resultMap>
+
+    <select id="findUserWithGoodsById" resultMap="userWithGoodsListResultMap">
+        SELECT
+        u.*,
+        g.id gid,
+        g.user_id,
+        g.name,
+        g.description,
+        g.create_at g_create_at
+        FROM
+        goods g
+        JOIN user u ON u.id = g.user_id
+        WHERE
+        u.id = #{id}
+    </select>
+
+    <resultMap id="userWithGoodsListResultMap" type="UserVO" autoMapping="true">
+        <!-- 封装查询主体 User: -->
+        <id column="id" property="id"/>
+        <!-- resultMap 设置了 autoMapping="true", 自动映射同名列 -->
+        <!--        <result column="passport" property="passport"/>-->
+        <!--        <result column="nickname" property="nickname"/>-->
+        <!--        <result column="balance" property="balance"/>-->
+        <!--        <result column="create_at" property="createAt"/>-->
+        <!--        <result column="update_at" property="updateAt"/>-->
+
+        <!-- 一对多关联映射使用 collection 标签 -->
+        <!-- property 是 UserVO 类中关联的属性 -->
+        <!-- 不是 javaType, 是 ofType,是指定集合中存储的数据类型 -->
+        <collection property="goodsList" ofType="com.feng.model.Goods" autoMapping="true">
+            <!-- id标签,用来映射主键列 -->
+            <!-- 这里的主键要使用别名, 不然只会显示一条数据 -->
+            <id column="gid" property="id"/>
+            <!--            <result column="user_id" property="userId"/>-->
+            <!--            <result column="name" property="name"/>-->
+            <!--            <result column="description" property="description"/>-->
+            <result column="g_create_at" property="createAt"/>
+        </collection>
+    </resultMap>
+
+    <!-- 虽然返回的是集合, 但是此处的 resultType 依然是集合中存储的数据类型, User -->
+    <select id="findAllUser" resultType="User">
+        <!-- 绑定多个参数 -->
+        <!-- 1. #{} 内按顺序填写 param1, param2, param3... -->
+        <!--        select * from user where balance &lt; #{param1} and nickname like #{param2}-->
+        <!-- 2. 在 findAllUser 的形参 使用 @Param 注解, 指定参数名 -->
+        select * from user where balance &lt; #{balance} and nickname like #{nickname}
+    </select>
+
+    <!-- findUserByLoginMap -->
+    <select id="findUserByLoginMap" resultType="User">
+        <!-- 参数是 map, #{} 内写 map 的 key -->
+        select * from user where passport = #{passport} and password = #{password}
+    </select>
+
+    <!-- insertUser -->
+    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        <!-- 1. #{} 内写 User 对象的属性名 -->
+        <!-- 2. 如果是自增主键, 需要在 insert 标签中添加 useGeneratedKeys="true" keyProperty="id" -->
+        insert into user (passport, password, nickname, balance, create_at, update_at) values (#{passport}, #{password},
+        #{nickname}, #{balance}, now(), now())
+    </insert>
+
+    <!-- updateUser -->
+    <update id="updateUser" parameterType="User">
+        update user set passport = #{passport}, password = #{password}, nickname = #{nickname}, balance = #{balance},
+        update_at = now() where id = #{id}
+    </update>
+
+    <!-- deleteBatch 批量删除 -->
+    <delete id="deleteUserByIdList">
+        delete from user where id in
+        <!-- collection 这里的参数必须写: list (arg0, collection) 不能是其他 -->
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
