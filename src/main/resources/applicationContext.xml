@@ -54,7 +54,7 @@
         <!-- List<Integer> -->
         <property name="scores">
             <list>
-                <!-- list 可以重复 -->
+                <!-- list 有顺序, 可以重复 -->
                 <value>100</value>
                 <value>90</value>
                 <value>90</value>
@@ -63,7 +63,7 @@
         <!-- Set<String> -->
         <property name="pets">
             <set>
-                <!-- set 不能重复 -->
+                <!-- set 无序, 不能重复 -->
                 <value>狗</value>
                 <value>狗</value>
                 <value>猫</value>
@@ -97,10 +97,11 @@
 
     <!-- 自动注入 -->
     <!-- autowire  -->
+    <!--  spring 容器在创建 GoodsServiceImpl 对象时, 发现有 goodsDao 属性, 于是去容器中查找是否有 GoodsDao 对象  -->
     <bean id="goodsService" class="com.feng.service.impl.GoodsServiceImpl" autowire="byName">
         <!-- 自动注入使用 autowire 属性 -->
         <!-- byName: 根据属性名自动注入 -->
-        <!-- byType: 根据属性类型自动注入 -->
+        <!-- byType: 根据属性类型自动注入, 如果有两个就报错  -->
         <!-- constructor: 根据构造方法参数类型自动注入 -->
         <!-- default: 默认值, 不自动注入 -->
     </bean>
