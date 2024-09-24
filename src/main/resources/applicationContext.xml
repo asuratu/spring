@@ -13,8 +13,104 @@
     <bean id="goods" class="com.feng.model.Goods"/>
     <bean id="user" class="com.feng.model.User"/>
 
+    <!-- 业务层对象 -->
+    <bean id="userService" class="com.feng.service.impl.UserServiceImpl">
+        <!-- 注入数据层对象 -->
+        <!-- property 给属性赋值 -->
+        <!-- name: 属性名 -->
+        <!-- ref: 给引用类型的赋值, 引用的是另一个 bean 的 id -->
+        <!-- value: 基本数据类型赋值 -->
+        <property name="userDao" ref="userDao"/>
+    </bean>
 
+    <!-- 数据层对象 -->
+    <bean id="userDao" class="com.feng.dao.impl.UserDaoImpl"/>
+
+    <!-- set 方法注入 -->
+    <bean id="testModel" class="com.feng.di.TestModel">
+        <!-- set 方法注入使用 property 标签 -->
+
+        <!-- int -->
+        <property name="id" value="1"/>
+        <!-- String -->
+        <property name="name" value="feng"/>
+        <!-- Integer -->
+        <property name="age" value="18"/>
+        <!-- Double -->
+        <property name="salary" value="25.9"/>
+        <!-- Boolean -->
+        <property name="married" value="true"/>
+        <!-- String[] -->
+        <!--        <property name="hobbies">-->
+        <!--            <array>-->
+        <!--                <value>吃饭</value>-->
+        <!--                <value>睡觉</value>-->
+        <!--                <value>打豆豆</value>-->
+        <!--            </array>-->
+        <!--        </property>-->
+        <property name="hobbies" value="吃饭,睡觉,打豆豆"/>
+        <!-- java.util.Date -->
+        <property name="birthday" value="2020/01/01"/>  <!-- 默认是 yyyy/MM/dd-->
+        <!-- List<Integer> -->
+        <property name="scores">
+            <list>
+                <!-- list 可以重复 -->
+                <value>100</value>
+                <value>90</value>
+                <value>90</value>
+            </list>
+        </property>
+        <!-- Set<String> -->
+        <property name="pets">
+            <set>
+                <!-- set 不能重复 -->
+                <value>狗</value>
+                <value>狗</value>
+                <value>猫</value>
+                <value>猪</value>
+            </set>
+        </property>
+        <!-- Map<String, String> -->
+        <property name="clothes">
+            <map>
+                <entry key="春天" value="春装"/>
+                <entry key="夏天" value="夏装"/>
+                <entry key="秋天" value="秋装"/>
+                <entry key="冬天" value="冬装"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- 构造方法注入 -->
+    <bean id="testModel2" class="com.feng.di.TestModel2">
+        <!-- 构造方法注入使用 constructor-arg 标签 -->
+        <!-- index: 构造方法参数的下标, 从 0 开始 -->
+        <!-- type: 构造方法参数的类型 -->
+        <!-- name: 构造方法参数的名称 -->
+        <!-- value: 构造方法参数的值 -->
+        <!-- 一般使用 name 不容易出错 -->
+        <!--        <constructor-arg index="0" type="int" value="1" name="id"/>-->
+        <constructor-arg name="id" value="1"/>
+        <!--        <constructor-arg index="1" type="java.lang.String" value="feng" name="name"/>-->
+        <constructor-arg name="name" value="feng"/>
+    </bean>
+
+    <!-- 自动注入 -->
+    <!-- autowire  -->
+    <bean id="goodsService" class="com.feng.service.impl.GoodsServiceImpl" autowire="byName">
+        <!-- 自动注入使用 autowire 属性 -->
+        <!-- byName: 根据属性名自动注入 -->
+        <!-- byType: 根据属性类型自动注入 -->
+        <!-- constructor: 根据构造方法参数类型自动注入 -->
+        <!-- default: 默认值, 不自动注入 -->
+    </bean>
+
+    <!-- GoodsDao -->
+    <bean id="goodsDao"
+          class="com.feng.dao.impl.GoodsDaoImpl"/> <!-- 对应 byType 的类型为 GoodsDao, 对应 byName 的名称为 goodsDao -->
+    <bean id="goodsDao1"
+          class="com.feng.dao.impl.GoodsDaoImpl"/> <!-- 对应 byType 的类型为 GoodsDao, 对应 byName 的名称为 goodsDao1 -->
+
+    <!-- 1. set 方法注入 2. 构造方法注入 3. 自动注入 -->
+    <!-- 推荐使用: set 方法注入 -->
 </beans>
-
-
-        <!-- 根据配置文件路径, 创建流, 流在创建工厂, 然后工厂才能干活 -->

@@ -5,7 +5,7 @@
       <element id="javaee-facet-resources" facet="day60_spring/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="module-output" name="day60_spring" />
+          <element id="module-output" name="day61_spring" />
         </element>
       </element>
     </root>
