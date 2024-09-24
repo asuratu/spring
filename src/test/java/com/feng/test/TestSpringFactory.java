@@ -27,6 +27,9 @@ public class TestSpringFactory {
 //        Goods goods = (Goods) context.getBean("goods");
 
         // 也可以通过类型获取对象, 但是如果有多个同类型的对象, 会报错
+//        Goods goods = context.getBean(Goods.class); // 如果xml中定义多个Goods对象 (id 不一样), 会报错
+
+        // 通过名字和类型获取对象, 即使有多个同类型的对象也不会报错, 通过name可以找到对应的bean
         Goods goods = context.getBean("goods", Goods.class);
 
         // 调用对象方法
@@ -46,7 +49,7 @@ public class TestSpringFactory {
         // UserService 是接口
         UserService userService = context.getBean("userService", UserService.class);
 
-        System.out.println(userService.findUserById(1));
+        System.out.println(userService.findUserById(3));
     }
 
     @Test
